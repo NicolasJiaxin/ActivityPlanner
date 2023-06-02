@@ -60,14 +60,16 @@ function initAutocomplete() {
     homeAutocomplete = new google.maps.places.Autocomplete(
         document.getElementById("homeSearchBox"),
         {
-            fields:['geometry','name']
+            fields:['geometry','name'],
+            strictBounds: true
         });
     homeAutocomplete.addListener('place_changed', onPlaceChangedHome);
 
     mapAutocomplete = new google.maps.places.Autocomplete(
         document.getElementById("mapSearchBox"),
         {
-            fields:['geometry','name']
+            fields:['geometry','name'],
+            strictBounds: true
         });
     mapAutocomplete.addListener('place_changed', onPlaceChangedMap);
 }
@@ -88,10 +90,10 @@ function onPlaceChangedCity() {
         citySearchBox.style.border = "2px solid rgba(123, 123, 123, 0.65)";
         let location = place.geometry.location;
         homeAutocomplete.setBounds({
-            north: location.lat + bounds,
-            south: location.lat - bounds,
-            east: location.lng + bounds,
-            west: location.lng - bounds
+            north: location.lat() + bounds,
+            south: location.lat() - bounds,
+            east: location.lng() + bounds,
+            west: location.lng() - bounds
         })
         displayHomeSelector();
     }
@@ -120,10 +122,10 @@ function onPlaceChangedHome() {
         });
         let location = place.geometry.location;
         mapAutocomplete.setBounds({
-            north: location.lat + bounds,
-            south: location.lat - bounds,
-            east: location.lng + bounds,
-            west: location.lng - bounds
+            north: location.lat() + bounds,
+            south: location.lat() - bounds,
+            east: location.lng() + bounds,
+            west: location.lng() - bounds
         })
         hideLightBox();
     }
