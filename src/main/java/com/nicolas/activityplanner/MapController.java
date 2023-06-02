@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class MapController {
@@ -18,7 +19,7 @@ public class MapController {
     public String display(ModelMap model) {
         model.put("place", new Place(0,"", 0,0, 0));
         model.put("placesList", placeService.getPlacesList());
-        return "map";
+        return "test";
     }
 
     @RequestMapping(value="/", method=RequestMethod.POST)
