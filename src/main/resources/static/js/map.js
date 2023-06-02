@@ -1,4 +1,5 @@
 let map;
+let homeMarker;
 let markers = [];
 let rows = [];
 let count = 0;
@@ -6,20 +7,22 @@ let mapAutocomplete;
 let cityAutocomplete;
 let homeAutocomplete;
 
+let bounds = 0.3; // ~About 30 km (each side)
+
 function initialize() {
     displayCitySelector();
-    // initMap();
+    initMap();
     initAutocomplete();
-    addRow("1");
-    addRow("2");
-    addRow("3");
-    addRow("4");
-    addRow("5");
-    addRow("6");
-    addRow("7");
-    addRow("8");
-    addRow("9");
-    addRow("10");
+    // addRow("1");
+    // addRow("2");
+    // addRow("3");
+    // addRow("4");
+    // addRow("5");
+    // addRow("6");
+    // addRow("7");
+    // addRow("8");
+    // addRow("9");
+    // addRow("10");
 }
 
 function displayCitySelector() {
@@ -83,6 +86,13 @@ function onPlaceChangedCity() {
         citySearchBox.placeholder = "";
         citySearchBox.style.boxShadow = "none";
         citySearchBox.style.border = "2px solid rgba(123, 123, 123, 0.65)";
+        let location = place.geometry.location;
+        homeAutocomplete.setBounds({
+            north: location.lat + bounds,
+            south: location.lat - bounds,
+            east: location.lng + bounds,
+            west: location.lng - bounds
+        })
         displayHomeSelector();
     }
 }
@@ -101,6 +111,20 @@ function onPlaceChangedHome() {
         homeSearchBox.placeholder = "";
         homeSearchBox.style.boxShadow = "none";
         homeSearchBox.style.border = "2px solid rgba(123, 123, 123, 0.65)";
+        map.setCenter(place.geometry.location);
+        map.setZoom(12);
+        homeMarker = new google.maps.Marker({
+            position: place.geometry.location,
+            map:map,
+            title:"Staying at: " + place.name
+        });
+        let location = place.geometry.location;
+        mapAutocomplete.setBounds({
+            north: location.lat + bounds,
+            south: location.lat - bounds,
+            east: location.lng + bounds,
+            west: location.lng - bounds
+        })
         hideLightBox();
     }
 }
