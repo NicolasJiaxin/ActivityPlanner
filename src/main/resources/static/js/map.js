@@ -1,6 +1,15 @@
+let map;
+let markers = [];
+let rows = [];
+let count = 0;
+let mapAutocomplete;
+let cityAutocomplete;
+let homeAutocomplete;
+
 function initialize() {
+    displayCitySelector();
     // initMap();
-    // initAutocomplete();
+    initAutocomplete();
     addRow("1");
     addRow("2");
     addRow("3");
@@ -13,45 +22,108 @@ function initialize() {
     addRow("10");
 }
 
-let map;
-let markers = [];
-let rows = [];
-let count = 0;
+function displayCitySelector() {
+    let lightbox = $(".lightbox");
+    lightbox.fadeIn(700);
+    lightbox.children("#citySearchBox,h1").each(function() {
+        $(this).delay(500).fadeIn(1000);
+    });
+}
+
+function displayHomeSelector() {
+    $(".lightbox").children("#homeSearchBox,h2").each(function() {
+        $(this).delay(200).fadeIn(1000);
+    });
+}
+
+function hideLightBox() {
+    $(".lightbox").delay(200).fadeOut(1000);
+}
 
 function initMap() {
     let pos = {lat: 45.47539111255855, lng: -73.40919636088881};
-    map = new google.maps.Map(document.getElementById("map"), {zoom:12, center:pos});
+    map = new google.maps.Map(document.getElementById("map"));
 }
 
 function initAutocomplete() {
-    autocomplete = new google.maps.places.Autocomplete(
-        document.getElementById("searchBox"),
+    cityAutocomplete = new google.maps.places.Autocomplete(
+        document.getElementById("citySearchBox"),
+        {
+            fields:['geometry','name'],
+            types:['(cities)']
+        });
+    cityAutocomplete.addListener('place_changed', onPlaceChangedCity);
+
+    homeAutocomplete = new google.maps.places.Autocomplete(
+        document.getElementById("homeSearchBox"),
         {
             fields:['geometry','name']
         });
+    homeAutocomplete.addListener('place_changed', onPlaceChangedHome);
 
-    autocomplete.addListener('place_changed', onPlaceChanged);
+    mapAutocomplete = new google.maps.places.Autocomplete(
+        document.getElementById("mapSearchBox"),
+        {
+            fields:['geometry','name']
+        });
+    mapAutocomplete.addListener('place_changed', onPlaceChangedMap);
 }
 
-function onPlaceChanged() {
-    var place = autocomplete.getPlace();
-    var searchBox = document.getElementById("searchBox");
+function onPlaceChangedCity() {
+    let place = cityAutocomplete.getPlace();
+    let citySearchBox = document.getElementById("citySearchBox");
 
     if (!place.geometry) {
         console.log("Invalid")
-        searchBox.placeholder = "Please select a valid place";
-        searchBox.style.boxShadow = "0 0 10px #666";
-        searchBox.style.border = "2px solid rgba(255, 11, 11, 0.65)";
+        citySearchBox.placeholder = "Please select a valid city";
+        citySearchBox.style.boxShadow = "0 0 10px #666";
+        citySearchBox.style.border = "2px solid red";
     } else {
         console.log(place.name);
-        searchBox.placeholder = "Enter a place";
-        searchBox.style.boxShadow = "none";
-        searchBox.style.border = "2px solid rgba(123, 123, 123, 0.65)";
+        citySearchBox.placeholder = "";
+        citySearchBox.style.boxShadow = "none";
+        citySearchBox.style.border = "2px solid rgba(123, 123, 123, 0.65)";
+        displayHomeSelector();
+    }
+}
+
+function onPlaceChangedHome() {
+    let place = homeAutocomplete.getPlace();
+    let homeSearchBox = document.getElementById("citySearchBox");
+
+    if (!place.geometry) {
+        console.log("Invalid")
+        homeSearchBox.placeholder = "Please select a valid place";
+        homeSearchBox.style.boxShadow = "0 0 10px #666";
+        homeSearchBox.style.border = "2px solid red";
+    } else {
+        console.log(place.name);
+        homeSearchBox.placeholder = "";
+        homeSearchBox.style.boxShadow = "none";
+        homeSearchBox.style.border = "2px solid rgba(123, 123, 123, 0.65)";
+        hideLightBox();
+    }
+}
+
+function onPlaceChangedMap() {
+    var place = mapAutocomplete.getPlace();
+    var mapSearchBox = document.getElementById("mapSearchBox");
+
+    if (!place.geometry) {
+        console.log("Invalid")
+        mapSearchBox.placeholder = "Please select a valid place";
+        mapSearchBox.style.boxShadow = "0 0 10px #666";
+        mapSearchBox.style.border = "2px solid red";
+    } else {
+        console.log(place.name);
+        mapSearchBox.placeholder = "Enter a place";
+        mapSearchBox.style.boxShadow = "none";
+        mapSearchBox.style.border = "2px solid rgba(123, 123, 123, 0.65)";
         count++;
         addMarker(place.geometry.location, place.name);
         addRow(place.name);
     }
-    searchBox.value = "";
+    mapSearchBox.value = "";
 }
 
 function addMarker(position, name) {

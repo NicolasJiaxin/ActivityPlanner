@@ -7,9 +7,16 @@
     <title>Activity Planner</title>
 </head>
 <body style="background-color:rgba(43,45,76,0.79);">
+    <div class="lightbox">
+        <h1 style="display: none; z-index: 30" class="mb-4">Enter your city</h1>
+        <input id="citySearchBox" type="text" style="display: none" class="searchBox">
+        <h2 style="display: none; z-index: 30" class="mt-5 mb-4">Enter where you will stay</h2>
+        <input id="homeSearchBox" type="text" style="display: none" class="searchBox">
+    </div>
+
     <div id="mapContainer">
         <div id="map"></div>
-        <input id="searchBox" placeholder="Enter a place" type="text">
+        <input id="mapSearchBox" placeholder="Enter a place" type="text" class="searchBox">
     </div>
 
     <div class="container-fluid pt-4 px-5">
@@ -19,19 +26,21 @@
             </div>
             <div class="col">
                 <h2 style="color: floralwhite; text-align:center">Places</h2>
-                <table class="table table-dark">
-                    <thead>
-                        <tr>
-                            <th style="width: 70px; text-align: center">Label</th>
-                            <th style="width: 70%; text-align: center">Name</th>
-                            <th style="width: 150px; text-align: center">Duration of visit</th>
-                            <th style="width:40px"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div class="table-wrapper">
+                    <table class="table table-dark">
+                        <thead>
+                            <tr>
+                                <th style="width: 70px; text-align: center">Label</th>
+                                <th style="width: 70%; text-align: center">Name</th>
+                                <th style="width: 150px; text-align: center">Duration of visit</th>
+                                <th style="width:40px"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
