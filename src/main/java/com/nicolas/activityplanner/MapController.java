@@ -17,15 +17,6 @@ public class MapController {
 
     @RequestMapping(value="/", method=RequestMethod.GET)
     public String display(ModelMap model) {
-        model.put("place", new Place(0,"", 0,0, 0));
-        model.put("placesList", placeService.getPlacesList());
-        return "test";
-    }
-
-    @RequestMapping(value="/", method=RequestMethod.POST)
-    public String display(ModelMap model, Place place) {
-        placeService.addPlace(place);
-        System.out.println(placeService.getPlacesList().size());
-        return "redirect:/";
+        return "map";
     }
 }

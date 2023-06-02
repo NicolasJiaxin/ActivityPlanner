@@ -48,17 +48,18 @@ function onPlaceChanged() {
         searchBox.style.boxShadow = "none";
         searchBox.style.border = "2px solid rgba(123, 123, 123, 0.65)";
         count++;
-        addMarker(place.geometry.location);
+        addMarker(place.geometry.location, place.name);
         addRow(place.name);
     }
     searchBox.value = "";
 }
 
-function addMarker(position) {
+function addMarker(position, name) {
     console.log("Adding marker");
     const marker = new google.maps.Marker({
         position,
         map,
+        title:name,
         label: count.toString()
     });
     markers.push(marker);
@@ -67,7 +68,7 @@ function addMarker(position) {
 function addRow(name) {
     let row = $("" +
         "<tr>" +
-        "<td id='label'>" + count + "</td>" +
+        "<td id='label'><strong>" + count + "</strong></td>" +
         "<td id='name'>" + name + "</td>" +
         "<td><input type='number' min='0' max='240' value='0' id='durationBox'></td>" +
         "<td><input type='button' id='deleteButton' value='✘'</td>" +
@@ -106,6 +107,6 @@ function removeRow(index) {
 
 function reindexTable(index) {
     for (let i = index; i < count; i++) {
-        rows[i].find("#label").text(i+1);
+        rows[i].find("#label").html("<strong>"+ (i+1) + "</strong>");
     }
 }
