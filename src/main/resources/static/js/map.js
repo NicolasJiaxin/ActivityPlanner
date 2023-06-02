@@ -9,6 +9,16 @@ let homeAutocomplete;
 
 let bounds = 0.3; // ~About 30 km (each side)
 
+class Place {
+    constructor(id, name, lat, lng, visitDuration) {
+        this.id = id;
+        this.name = name;
+        this.latitude = lat;
+        this.longitude = lng;
+        this.visitDuration = visitDuration;
+    }
+}
+
 function initialize() {
     displayCitySelector();
     initMap();
@@ -19,6 +29,34 @@ function initialize() {
         let label = $(this).parent().siblings(".label").text();
         console.log(label);
         removePlace(parseInt(label)-1);
+    });
+
+    $("#submitButton").click(function(e) {
+        let places = [];
+        for (let i = 0; i < count; i++) {
+            let p = new Place(
+                i,
+                rows[i].find(".name").text(),
+                markers[i].getPosition().lat(),
+                markers[i].getPosition().lng(),
+                rows[i].find("#durationBox").val()
+            );
+            places.push(p);
+
+        }
+        console.log(JSON.stringify(places));
+       $.ajax({
+           type: "POST",
+           url: "/compute?days=1",
+           data: JSON.stringify(places),
+           success: function(data) {
+               console.log(data);
+           },
+           error: function(e) {
+               alert("Error " + e);
+           },
+           contentType: "application/json; charset=utf-8"
+       });
     });
 
     // addRow("1");

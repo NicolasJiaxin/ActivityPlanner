@@ -22,11 +22,11 @@
     <div class="container-fluid pt-4 px-5">
         <div class="row">
             <div class="col-4">
-                HI
+                <br><br>
+                <input type="submit" class="btn btn-success" value="Submit" id="submitButton">
             </div>
             <div class="col">
                 <h2 style="color: floralwhite; text-align:center">Places</h2>
-<%--                <div class="table-wrapper">--%>
                 <table class="table table-dark" id="placesTable">
                     <thead>
                         <tr>
@@ -41,7 +41,6 @@
                         </tr>
                     </tbody>
                 </table>
-<%--                </div>--%>
             </div>
         </div>
     </div>

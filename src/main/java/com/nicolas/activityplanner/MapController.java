@@ -2,9 +2,9 @@ package com.nicolas.activityplanner;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 public class MapController {
@@ -18,5 +18,14 @@ public class MapController {
     @RequestMapping(value="/", method=RequestMethod.GET)
     public String display(ModelMap model) {
         return "map";
+    }
+
+    @RequestMapping(value="/compute", method = RequestMethod.POST)
+    @ResponseBody
+    public List<Place> processPlaces(@RequestParam("days") int days, @RequestBody List<Place> places) {
+        for (int i = 0; i < places.size(); i++) {
+            System.out.println(places.get(i));
+        }
+        return places;
     }
 }
