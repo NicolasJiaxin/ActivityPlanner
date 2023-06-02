@@ -13,6 +13,14 @@ function initialize() {
     displayCitySelector();
     initMap();
     initAutocomplete();
+
+    // Add delegate events for delete buttons of each row
+    $("tbody").on("click", "#deleteButton", function() {
+        let label = $(this).parent().siblings(".label").text();
+        console.log(label);
+        removePlace(parseInt(label)-1);
+    });
+
     // addRow("1");
     // addRow("2");
     // addRow("3");
@@ -166,16 +174,11 @@ function addMarker(position, name) {
 function addRow(name) {
     let row = $("" +
         "<tr>" +
-        "<td id='label'><strong>" + count + "</strong></td>" +
-        "<td id='name'>" + name + "</td>" +
-        "<td><input type='number' min='0' max='240' value='0' id='durationBox'></td>" +
-        "<td><input type='button' id='deleteButton' value='✘'</td>" +
+        "<td class='label'><strong>" + count + "</strong></td>" +
+        "<td class='name'>" + name + "</td>" +
+        "<td class='duration'><input type='number' min='0' max='240' value='0' id='durationBox'></td>" +
+        "<td class='delete'><input type='button' id='deleteButton' value='✘'</td>" +
         "</tr>");
-    row.find("#deleteButton").click(function() {
-        let label = $(this).parent().siblings("#label").text();
-        console.log(label);
-        removePlace(parseInt(label)-1);
-    });
     $("tbody").append(row);
     rows.push(row);
 }
@@ -205,6 +208,6 @@ function removeRow(index) {
 
 function reindexTable(index) {
     for (let i = index; i < count; i++) {
-        rows[i].find("#label").html("<strong>"+ (i+1) + "</strong>");
+        rows[i].find(".label").html("<strong>"+ (i+1) + "</strong>");
     }
 }

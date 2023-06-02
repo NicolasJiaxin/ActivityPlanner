@@ -26,21 +26,22 @@
             </div>
             <div class="col">
                 <h2 style="color: floralwhite; text-align:center">Places</h2>
-                <div class="table-wrapper">
-                    <table class="table table-dark">
-                        <thead>
-                            <tr>
-                                <th style="width: 70px; text-align: center">Label</th>
-                                <th style="width: 70%; text-align: center">Name</th>
-                                <th style="width: 150px; text-align: center">Duration of visit</th>
-                                <th style="width:40px"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
-                </div>
+<%--                <div class="table-wrapper">--%>
+                <table class="table table-dark" id="placesTable">
+                    <thead>
+                        <tr>
+                            <th class="label">Label</th>
+                            <th class="name">Name</th>
+                            <th class="duration">Duration of visit</th>
+                            <th class="delete"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        </tr>
+                    </tbody>
+                </table>
+<%--                </div>--%>
             </div>
         </div>
     </div>
