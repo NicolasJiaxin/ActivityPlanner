@@ -4,6 +4,7 @@
 <head>
     <link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/map.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" th:href="@{/favicon.ico}"/>
     <title>Activity Planner</title>
 </head>
 <body style="background-color:rgba(43,45,76,0.79);">

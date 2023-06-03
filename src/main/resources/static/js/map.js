@@ -22,9 +22,9 @@ class Place {
 
 function initialize() {
     setupButtons();
-    displayCitySelector();
-    initMap();
-    initAutocomplete();
+    // displayCitySelector();
+    // initMap();
+    // initAutocomplete();
 
     // addRow(1,"1",defaultDuration);
     // addRow(2,"2",defaultDuration);
