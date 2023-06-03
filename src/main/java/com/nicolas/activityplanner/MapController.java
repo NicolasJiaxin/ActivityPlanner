@@ -26,6 +26,9 @@ public class MapController {
         for (int i = 0; i < places.size(); i++) {
             System.out.println(places.get(i));
         }
+        placeService.setPlacesList(places);
+        placeService.computeDistance();
+
         return places;
     }
 }
