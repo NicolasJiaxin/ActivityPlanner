@@ -39,13 +39,21 @@ function initialize() {
 }
 
 function setupButtons() {
-    // Add delegate events for delete buttons of each row
+    // Add delegate events for delete buttons of each row in table
     $("tbody").on("click", "#deleteButton", function() {
         let label = $(this).parent().siblings(".label").text();
         console.log(label);
         removePlace(parseInt(label)-1);
     });
 
+    // Select for number of days
+    let select = $("#numberDays");
+    select.append("<option selected='selected'>1</option>")
+    for (let i = 2; i < 11; i++) {
+        select.append("<option>"+i+"</option>");
+    }
+
+    // Submit button
     $("#submitButton").click(function(e) {
         let homePlace = new Place(
             0,
@@ -69,7 +77,7 @@ function setupButtons() {
         console.log(JSON.stringify(places));
         $.ajax({
             type: "POST",
-            url: "/compute?days=1",
+            url: "/compute?days=" + $("#numberDays").val(),
             data: JSON.stringify(places),
             success: function(data) {
                 console.log(data);
@@ -151,7 +159,9 @@ function onPlaceChangedCity() {
             south: location.lat() - bounds,
             east: location.lng() + bounds,
             west: location.lng() - bounds
-        })
+        });
+
+        $("<text>" + place.name + "</text>").css("display","none").appendTo($("#cityInfo")).fadeIn(1000);
         displayHomeSelector();
     }
 }
@@ -183,7 +193,9 @@ function onPlaceChangedHome() {
             south: location.lat() - bounds,
             east: location.lng() + bounds,
             west: location.lng() - bounds
-        })
+        });
+
+        $("<text>" + place.name + "</text>").css("display","none").appendTo($("#homeInfo")).fadeIn(1000);
         hideLightBox();
     }
 }

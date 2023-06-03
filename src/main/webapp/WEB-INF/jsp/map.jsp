@@ -21,9 +21,16 @@
 
     <div class="container-fluid pt-4 px-5">
         <div class="row">
-            <div class="col-4">
-                <br><br>
-                <input type="submit" class="btn btn-success" value="Submit" id="submitButton">
+            <div class="col-4" id="information">
+                <h2 class="mb-4">Trip Information</h2>
+                <p id="cityInfo" class="mb-3">Current city: </p>
+                <p id="homeInfo" class="mb-3">Current stay: </p>
+                Number of days
+                <select id="numberDays" class="form-select-sm ms-5">
+                </select>
+                <div style="text-align: center" class="mt-4">
+                    <input type="submit" class="btn btn-success" value="Submit" id="submitButton">
+                </div>
             </div>
             <div class="col">
                 <h2 style="color: floralwhite; text-align:center">Places</h2>
