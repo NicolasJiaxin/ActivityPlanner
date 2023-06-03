@@ -1,7 +1,9 @@
 package com.nicolas.activityplanner;
 
 import com.google.maps.routing.v2.*;
+import com.google.rpc.StatusProto;
 import com.google.type.LatLng;
+import com.nicolas.activityplanner.algorithms.Clustering;
 import io.grpc.*;
 import io.grpc.netty.NettyChannelBuilder;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,8 @@ public class PlaceService {
         for (Place place : placesList) {
             routesClient.addWaypoint(place.getLatitude(), place.getLongitude());
         }
-        routesClient.computeRouteMatrix();
+        long[][][] matrices = routesClient.computeRouteMatrix();
+        Clustering.cluster(matrices[2], 5, true);
     }
 
     private static class RoutesClient {
@@ -93,7 +96,7 @@ public class PlaceService {
             waypoints.add(createWaypointForLatLng(lat,lng));
         }
 
-        public void computeRouteMatrix() {
+        public long[][][] computeRouteMatrix() {
             System.out.println("Waypoints count: " + waypoints.size());
             ComputeRouteMatrixRequest.Builder builder  = ComputeRouteMatrixRequest.newBuilder()
                     .setTravelMode(RouteTravelMode.DRIVE).setRoutingPreference(RoutingPreference.TRAFFIC_AWARE);
@@ -113,19 +116,29 @@ public class PlaceService {
                 elements = blockingStub.withDeadlineAfter(2000, TimeUnit.MILLISECONDS).computeRouteMatrix(request);
             } catch (StatusRuntimeException e) {
                 logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
-                return;
+                return null;
             }
+
+            // 0: distance matrix
+            // 1: static duration matrix
+            // 2: duration matrix
+            long[][][] matrices = new long[3][request.getOriginsCount()][request.getDestinationsCount()];
 
             while (elements.hasNext()) {
-                RouteMatrixElement element = (RouteMatrixElement)elements.next();
-                System.out.println(element.getOriginIndex() + " " + element.getDestinationIndex() + " " +
-                element.getDuration() + " " +
-                element.getDistanceMeters() + " " +
-                        element.getCondition());
-
-                logger.info("Element response: " + element.toString());
-
+                RouteMatrixElement element = (RouteMatrixElement) elements.next();
+                if (element.getStatus().getCode() == 0 && element.getCondition() == RouteMatrixElementCondition.ROUTE_EXISTS) {
+                    int i = element.getOriginIndex();
+                    int j = element.getDestinationIndex();
+                    matrices[0][i][j] = element.getDistanceMeters();
+                    matrices[1][i][j] = element.getStaticDuration().getSeconds();
+                    matrices[2][i][j] = element.getDuration().getSeconds();
+                    logger.info("Element response: " + element.toString());
+                } else {
+                    logger.log(Level.WARNING, "Error for entry: " + element.getOriginIndex() + " " + element.getDestinationIndex());
+                }
             }
+
+            return matrices;
         }
     }
 }
