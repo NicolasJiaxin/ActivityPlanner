@@ -7,7 +7,8 @@ let mapAutocomplete;
 let cityAutocomplete;
 let homeAutocomplete;
 
-let bounds = 0.3; // ~About 30 km (each side)
+const bounds = 0.3; // ~About 30 km (each side)
+const defaultDuration = 0;
 
 class Place {
     constructor(id, name, lat, lng, visitDuration) {
@@ -20,10 +21,24 @@ class Place {
 }
 
 function initialize() {
+    setupButtons();
     displayCitySelector();
     initMap();
     initAutocomplete();
 
+    // addRow(1,"1",defaultDuration);
+    // addRow(2,"2",defaultDuration);
+    // addRow(3,"3",defaultDuration);
+    // addRow(4,"4",defaultDuration);
+    // addRow(5,"5",defaultDuration);
+    // addRow(6,"6",defaultDuration);
+    // addRow(7,"7",defaultDuration);
+    // addRow(8,"8",defaultDuration);
+    // addRow(9,"9",defaultDuration);
+    // addRow(10,"10",defaultDuration);
+}
+
+function setupButtons() {
     // Add delegate events for delete buttons of each row
     $("tbody").on("click", "#deleteButton", function() {
         let label = $(this).parent().siblings(".label").text();
@@ -32,10 +47,17 @@ function initialize() {
     });
 
     $("#submitButton").click(function(e) {
-        let places = [];
+        let homePlace = new Place(
+            0,
+            homeMarker.getTitle(),
+            homeMarker.getPosition().lat(),
+            homeMarker.getPosition.lng(),
+            0
+        )
+        let places = [homePlace];
         for (let i = 0; i < count; i++) {
             let p = new Place(
-                i,
+                i+1,
                 rows[i].find(".name").text(),
                 markers[i].getPosition().lat(),
                 markers[i].getPosition().lng(),
@@ -45,30 +67,19 @@ function initialize() {
 
         }
         console.log(JSON.stringify(places));
-       $.ajax({
-           type: "POST",
-           url: "/compute?days=1",
-           data: JSON.stringify(places),
-           success: function(data) {
-               console.log(data);
-           },
-           error: function(e) {
-               alert("Error " + e);
-           },
-           contentType: "application/json; charset=utf-8"
-       });
+        $.ajax({
+            type: "POST",
+            url: "/compute?days=1",
+            data: JSON.stringify(places),
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(e) {
+                alert("Error " + e);
+            },
+            contentType: "application/json; charset=utf-8"
+        });
     });
-
-    // addRow("1");
-    // addRow("2");
-    // addRow("3");
-    // addRow("4");
-    // addRow("5");
-    // addRow("6");
-    // addRow("7");
-    // addRow("8");
-    // addRow("9");
-    // addRow("10");
 }
 
 function displayCitySelector() {
@@ -192,29 +203,29 @@ function onPlaceChangedMap() {
         mapSearchBox.style.boxShadow = "none";
         mapSearchBox.style.border = "2px solid rgba(123, 123, 123, 0.65)";
         count++;
-        addMarker(place.geometry.location, place.name);
-        addRow(place.name);
+        addMarker(place.geometry.location, place.name, count.toString());
+        addRow(count, place.name, defaultDuration);
     }
     mapSearchBox.value = "";
 }
 
-function addMarker(position, name) {
+function addMarker(position, title, label) {
     console.log("Adding marker");
     const marker = new google.maps.Marker({
         position,
         map,
-        title:name,
-        label: count.toString()
+        title,
+        label
     });
     markers.push(marker);
 }
 
-function addRow(name) {
+function addRow(label, name, duration) {
     let row = $("" +
         "<tr>" +
-        "<td class='label'><strong>" + count + "</strong></td>" +
+        "<td class='label'><strong>" + label + "</strong></td>" +
         "<td class='name'>" + name + "</td>" +
-        "<td class='duration'><input type='number' min='0' max='240' value='0' id='durationBox'></td>" +
+        "<td class='duration'><input type='number' min='0' max='240' value=" + duration +" id='durationBox'></td>" +
         "<td class='delete'><input type='button' id='deleteButton' value='✘'</td>" +
         "</tr>");
     $("tbody").append(row);
