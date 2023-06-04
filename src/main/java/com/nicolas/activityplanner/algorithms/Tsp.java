@@ -1,4 +1,100 @@
 package com.nicolas.activityplanner.algorithms;
 
+import javax.swing.text.Style;
+
 public class Tsp {
+    static long MAX = 1000000000;
+
+    static int n;
+
+    static long[][] dist;
+
+    // memoization for top-down recursion
+    static long[][] memo;
+    static int[][] prev;
+
+    public static void setup(long[][] dist) {
+        Tsp.dist = dist;
+        Tsp.n = dist.length -1;
+        memo = new long[n + 1][1 << (n + 1)];
+        prev = new int[n + 1][1 << (n + 1)];
+    }
+
+    static long fun(int i, int mask)
+    {
+        // base case
+        // if only ith bit and 1st bit is set in our mask,
+        // it implies we have visited all other nodes
+        // already
+        if (mask == ((1 << i) | 3)) {
+            prev[i][mask] = 1;
+            return dist[1][i];
+        }
+        // memoization
+        if (memo[i][mask] != 0) {
+            return memo[i][mask];
+        }
+
+        long res = MAX; // result of this sub-problem
+        int prevVertex = 1;
+
+        // we have to travel all nodes j in mask and end the
+        // path at ith node so for every node j in mask,
+        // recursively calculate cost of travelling all
+        // nodes in mask
+        // except i and then travel back from node j to node
+        // i taking the shortest path take the minimum of
+        // all possible j nodes
+
+        for (int j = 2; j <= n; j++)
+            if ((mask & (1 << j)) != 0 && j != i && j != 1) {
+                long bestPrevTour = fun(j, mask & (~(1 << i))) + dist[j][i];
+                if (bestPrevTour < res) {
+                    res = bestPrevTour;
+                    prevVertex = j;
+                }
+            }
+        memo[i][mask] = res;
+        prev[i][mask] = prevVertex;
+        return res;
+    }
+
+    public static long[] solve() {
+        long ans = MAX;
+        int lastVertex = 1;
+        for (int i = 1; i <= n; i++) {
+            // try to go from node 1 visiting all nodes in
+            // between to i then return from i taking the
+            // shortest route to 1
+            long bestTour = fun(i, (1 << (n + 1)) - 1) + dist[i][1];
+            if (bestTour < ans) {
+                ans = bestTour;
+                lastVertex = i;
+            }
+        }
+
+        return new long[] {ans,lastVertex};
+    }
+
+    public static void main(String[] args) {
+        Tsp.setup(new long[][]
+               {{0,  0,  0,  0,  0},
+                {0,  0, 10, 15, 20 },
+                {0, 10,  0, 25, 25 },
+                {0, 15, 25,  0, 30 },
+                {0, 20, 25, 30,  0 }}
+        );
+        long[] sol = solve();
+        System.out.println("Cost: " + sol[0] + " Last: " + sol[1]);
+        System.out.println("The tour is:");
+        // Start with all vertices set and remove the last vertex
+        int mask = (1 << (n + 1)) - 1;
+        int prevVertex = (int)sol[1];
+        for(int i = 0; i < n; i++) {
+            System.out.println(prevVertex + " " + memo[prevVertex][mask] + " " + mask);
+            int temp = prev[prevVertex][mask];
+            mask = mask & (~(1 << prevVertex));
+            prevVertex = temp;
+        }
+    }
 }
