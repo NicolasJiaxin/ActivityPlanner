@@ -5,6 +5,9 @@ import javax.swing.text.Style;
 public class Tsp {
     static long MAX = 1000000000;
 
+    static long bestTourCost = MAX;
+    static int[] bestTour;
+
     static int n;
 
     static long[][] dist;
@@ -18,6 +21,7 @@ public class Tsp {
         Tsp.n = dist.length -1;
         memo = new long[n + 1][1 << (n + 1)];
         prev = new int[n + 1][1 << (n + 1)];
+        bestTour = new int[n];
     }
 
     static long fun(int i, int mask)
@@ -27,7 +31,7 @@ public class Tsp {
         // it implies we have visited all other nodes
         // already
         if (mask == ((1 << i) | 3)) {
-            prev[i][mask] = 1;
+            //prev[i][mask] = 1; // Could set it for clarity but really is trivial
             return dist[1][i];
         }
         // memoization
@@ -59,9 +63,9 @@ public class Tsp {
         return res;
     }
 
-    public static long[] solve() {
+    public static void solve() {
         long ans = MAX;
-        int lastVertex = 1;
+        int prevVertex = 1;
         for (int i = 1; i <= n; i++) {
             // try to go from node 1 visiting all nodes in
             // between to i then return from i taking the
@@ -69,32 +73,44 @@ public class Tsp {
             long bestTour = fun(i, (1 << (n + 1)) - 1) + dist[i][1];
             if (bestTour < ans) {
                 ans = bestTour;
-                lastVertex = i;
+                prevVertex = i;
             }
         }
 
-        return new long[] {ans,lastVertex};
+        bestTourCost = ans;
+
+        // Backtrack the best tour starting at the last vertex
+        int mask = (1 << (n + 1)) - 1;
+        bestTour[0] = 1;
+        for(int i = 0; i < n-1; i++) {
+            bestTour[i+1] = prevVertex;
+            int temp = prev[prevVertex][mask];
+            mask = mask & (~(1 << prevVertex));
+            prevVertex = temp;
+        }
+    }
+
+    public static long getBestTourCost() {
+        return bestTourCost;
+    }
+
+    public static int[] getBestTour() {
+        return bestTour;
     }
 
     public static void main(String[] args) {
         Tsp.setup(new long[][]
                {{0,  0,  0,  0,  0},
                 {0,  0, 10, 15, 20 },
-                {0, 10,  0, 25, 25 },
-                {0, 15, 25,  0, 30 },
+                {0, 10,  0, 35, 25 },
+                {0, 15, 35,  0, 30 },
                 {0, 20, 25, 30,  0 }}
         );
-        long[] sol = solve();
-        System.out.println("Cost: " + sol[0] + " Last: " + sol[1]);
+        solve();
+        System.out.println("Cost: " + getBestTour());
         System.out.println("The tour is:");
-        // Start with all vertices set and remove the last vertex
-        int mask = (1 << (n + 1)) - 1;
-        int prevVertex = (int)sol[1];
         for(int i = 0; i < n; i++) {
-            System.out.println(prevVertex + " " + memo[prevVertex][mask] + " " + mask);
-            int temp = prev[prevVertex][mask];
-            mask = mask & (~(1 << prevVertex));
-            prevVertex = temp;
+            System.out.println(bestTour[i]);
         }
     }
 }
