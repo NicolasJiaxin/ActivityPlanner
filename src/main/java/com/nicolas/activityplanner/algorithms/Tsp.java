@@ -51,7 +51,7 @@ public class Tsp {
         // all possible j nodes
 
         for (int j = 2; j <= n; j++)
-            if ((mask & (1 << j)) != 0 && j != i && j != 1) {
+            if ((mask & (1 << j)) != 0 && j != i) {
                 long bestPrevTour = fun(j, mask & (~(1 << i))) + dist[j][i];
                 if (bestPrevTour < res) {
                     res = bestPrevTour;
@@ -107,7 +107,7 @@ public class Tsp {
                 {0, 20, 25, 30,  0 }}
         );
         solve();
-        System.out.println("Cost: " + getBestTour());
+        System.out.println("Cost: " + getBestTourCost());
         System.out.println("The tour is:");
         for(int i = 0; i < n; i++) {
             System.out.println(bestTour[i]);
