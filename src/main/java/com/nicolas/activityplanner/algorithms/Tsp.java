@@ -18,9 +18,9 @@ public class Tsp {
 
     public static void setup(long[][] dist) {
         Tsp.dist = dist;
-        Tsp.n = dist.length -1;
-        memo = new long[n + 1][1 << (n + 1)];
-        prev = new int[n + 1][1 << (n + 1)];
+        Tsp.n = dist.length;
+        memo = new long[n][1 << (n)];
+        prev = new int[n][1 << (n)];
         bestTour = new int[n];
     }
 
@@ -30,9 +30,9 @@ public class Tsp {
         // if only ith bit and 1st bit is set in our mask,
         // it implies we have visited all other nodes
         // already
-        if (mask == ((1 << i) | 3)) {
+        if (mask == ((1 << i) | 1)) {
             //prev[i][mask] = 1; // Could set it for clarity but really is trivial
-            return dist[1][i];
+            return dist[i][0];
         }
         // memoization
         if (memo[i][mask] != 0) {
@@ -40,7 +40,7 @@ public class Tsp {
         }
 
         long res = MAX; // result of this sub-problem
-        int prevVertex = 1;
+        int prevVertex = 0;
 
         // we have to travel all nodes j in mask and end the
         // path at ith node so for every node j in mask,
@@ -50,7 +50,7 @@ public class Tsp {
         // i taking the shortest path take the minimum of
         // all possible j nodes
 
-        for (int j = 2; j <= n; j++)
+        for (int j = 1; j < n; j++)
             if ((mask & (1 << j)) != 0 && j != i) {
                 long bestPrevTour = fun(j, mask & (~(1 << i))) + dist[j][i];
                 if (bestPrevTour < res) {
@@ -66,11 +66,11 @@ public class Tsp {
     public static void solve() {
         long ans = MAX;
         int prevVertex = 1;
-        for (int i = 1; i <= n; i++) {
+        for (int i = 0; i < n; i++) {
             // try to go from node 1 visiting all nodes in
             // between to i then return from i taking the
             // shortest route to 1
-            long bestTour = fun(i, (1 << (n + 1)) - 1) + dist[i][1];
+            long bestTour = fun(i, (1 << n) - 1) + dist[i][0];
             if (bestTour < ans) {
                 ans = bestTour;
                 prevVertex = i;
@@ -80,8 +80,8 @@ public class Tsp {
         bestTourCost = ans;
 
         // Backtrack the best tour starting at the last vertex
-        int mask = (1 << (n + 1)) - 1;
-        bestTour[0] = 1;
+        int mask = (1 << n) - 1;
+        bestTour[0] = 0;
         for(int i = 0; i < n-1; i++) {
             bestTour[i+1] = prevVertex;
             int temp = prev[prevVertex][mask];
@@ -100,11 +100,11 @@ public class Tsp {
 
     public static void main(String[] args) {
         Tsp.setup(new long[][]
-               {{0,  0,  0,  0,  0},
-                {0,  0, 10, 15, 20 },
-                {0, 10,  0, 35, 25 },
-                {0, 15, 35,  0, 30 },
-                {0, 20, 25, 30,  0 }}
+               {
+                { 0, 10, 15, 20 },
+                {10,  0, 35, 25 },
+                {15, 35,  0, 30 },
+                {20, 25, 30,  0 }}
         );
         solve();
         System.out.println("Cost: " + getBestTourCost());
