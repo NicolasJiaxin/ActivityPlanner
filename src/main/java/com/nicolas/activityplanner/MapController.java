@@ -1,5 +1,6 @@
 package com.nicolas.activityplanner;
 
+import com.nicolas.activityplanner.algorithms.Plan;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +23,13 @@ public class MapController {
 
     @RequestMapping(value="/compute", method = RequestMethod.POST)
     @ResponseBody
-    public List<Place> processPlaces(@RequestParam("days") int days, @RequestBody List<Place> places) {
+    public Plan[] processPlaces(@RequestParam("days") int days, @RequestBody List<Place> places) {
         for (int i = 0; i < places.size(); i++) {
             System.out.println(places.get(i));
         }
         placeService.setPlacesList(places);
-        placeService.computeDistance();
+        Plan[] plans = placeService.getPlan(days);
 
-        return places;
+        return plans;
     }
 }
