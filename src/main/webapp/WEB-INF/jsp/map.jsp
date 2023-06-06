@@ -27,10 +27,25 @@
                 <p id="cityInfo" class="mb-3">Current city: </p>
                 <p id="homeInfo" class="mb-3">Current stay: </p>
                 Number of days
-                <select id="numberDays" class="form-select-sm ms-5">
-                </select>
-                <div style="text-align: center" class="mt-4">
+                <select id="numberDays" class="form-select-sm ms-5 mb-3"></select>
+
+                <div id="minimizeOptions" class="mb-3">
+                    Minimize:&nbsp&nbsp&nbsp
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="minimizeOptions" id="timeOption" checked>
+                        <label class="form-check-label" for="timeOption">Time</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="minimizeOptions" id="distanceOption">
+                        <label class="form-check-label" for="distanceOption">Distance</label>
+                    </div>
+                </div>
+
+                <div style="text-align: center" class="mt-1">
                     <input type="submit" class="btn btn-success" value="Submit" id="submitButton">
+                </div>
+                <div class="mt-3" id="showPlans"  style="display: none">
+                    <h5><a id="showPlansButton" href="#plansTables">Show plans</a></h5>
                 </div>
             </div>
             <div class="col">
@@ -51,6 +66,10 @@
                 </table>
             </div>
         </div>
+    </div>
+
+    <div id="plansDiv" class="container m-5" style="display: none">
+        <h1 id="plansTables">Trip Plan</h1>
     </div>
 
     <script src="js/map.js"></script>

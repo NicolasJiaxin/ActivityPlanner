@@ -55,6 +55,9 @@ function setupButtons() {
 
     // Submit button
     $("#submitButton").click(function(e) {
+        $("#plansDiv").css("display","none").empty();
+        $(this).val("Loading...");
+        $(this).prop("disabled", true);
         let homePlace = new Place(
             0,
             homeMarker.getTitle(),
@@ -79,14 +82,22 @@ function setupButtons() {
             type: "POST",
             url: "/compute?days=" + $("#numberDays").val(),
             data: JSON.stringify(places),
-            success: function(data) {
-                console.log(data);
+            success: function(plans) {
+                console.log(plans);
+                displayAllPlans(plans);
+                $("#showPlans").fadeIn(700);
             },
             error: function(e) {
-                alert("Error " + e);
+                alert("Error. Will be reported.");
             },
             contentType: "application/json; charset=utf-8"
         });
+        $("#submitButton").val("Submit");
+        $("#submitButton").prop("disabled", false);
+    });
+
+    $("#showPlansButton").click(function() {
+        $("#plansDiv").css("display", "");
     });
 }
 
@@ -235,10 +246,10 @@ function addMarker(position, title, label) {
 function addRow(label, name, duration) {
     let row = $("" +
         "<tr>" +
-        "<td class='label'><strong>" + label + "</strong></td>" +
-        "<td class='name'>" + name + "</td>" +
-        "<td class='duration'><input type='number' min='0' max='240' value=" + duration +" id='durationBox'></td>" +
-        "<td class='delete'><input type='button' id='deleteButton' value='✘'</td>" +
+            "<td class='label'><strong>" + label + "</strong></td>" +
+            "<td class='name'>" + name + "</td>" +
+            "<td class='duration'><input type='number' min='0' max='240' value=" + duration +" id='durationBox'></td>" +
+            "<td class='delete'><input type='button' id='deleteButton' value='✘'</td>" +
         "</tr>");
     $("tbody").append(row);
     rows.push(row);
@@ -271,4 +282,51 @@ function reindexTable(index) {
     for (let i = index; i < count; i++) {
         rows[i].find(".label").html("<strong>"+ (i+1) + "</strong>");
     }
+}
+
+function displayAllPlans(plans) {
+    let plansDiv = $("#plansDiv");
+    plansDiv.append("<h1 id='plansTables'>Trip Plan</h1>");
+
+    for(let i = 0; i < plans.length; i++) {
+        if (plans[i].itinerary.length !== 2) {
+            plansDiv.append("<h2 class='mt-3'>Day " + (i + 1) + " plan</h2>");
+            let rows = displayPlan(plans[i]);
+            plansDiv.append("<table class='table table-dark' style='width: max-content'>" +
+                "<thead>" +
+                "<tr>" +
+                "<th class='label'>Label</th>" +
+                "<th class='name'>Name</th>" +
+                "<th class='duration'>Duration of visit</th>" +
+                "</tr>" +
+                "</thead><tbody style='height: auto; width: max-content'>" +
+                rows +
+                "</tbody></table>");
+            plansDiv.append("<strong>Time:</strong> " + Math.round(plans[i].timeCost / 60) + " minutes (including visit time)");
+        }
+    }
+}
+
+function displayPlan(plan) {
+    let itinerary = plan.itinerary;
+    let rows = "<tr>" +
+            "<td class='label'><strong>Staying at</strong></td>" +
+            "<td class='name'>" + itinerary[0].name.substring(11) + "</td>" +
+            "<td class='duration'>" + itinerary[0].visitDuration + "</td>" +
+            "</tr>";
+    for (let i = 1; i < itinerary.length - 1; i++) {
+        rows +=
+            "<tr>" +
+                "<td class='label'><strong>" + itinerary[i].id + "</strong></td>" +
+                "<td class='name'>" + itinerary[i].name + "</td>" +
+                "<td class='duration'>" + itinerary[i].visitDuration + "</td>" +
+            "</tr>";
+    }
+
+    rows += "<tr>" +
+        "<td class='label'><strong>Staying at</strong></td>" +
+        "<td class='name'>" + itinerary[itinerary.length - 1].name.substring(11) + "</td>" +
+        "<td class='duration'>" + itinerary[itinerary.length - 1].visitDuration + "</td>" +
+        "</tr>";
+    return rows;
 }
