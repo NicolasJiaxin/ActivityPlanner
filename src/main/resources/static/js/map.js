@@ -80,7 +80,7 @@ function setupButtons() {
         console.log(JSON.stringify(places));
         $.ajax({
             type: "POST",
-            url: "/compute?days=" + $("#numberDays").val(),
+            url: "/compute?days=" + $("#numberDays").val() + "&minimizeTime=" + $("#timeOption").prop("checked"),
             data: JSON.stringify(places),
             success: function(plans) {
                 console.log(plans);

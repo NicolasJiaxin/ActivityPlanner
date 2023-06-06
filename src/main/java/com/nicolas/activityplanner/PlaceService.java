@@ -30,13 +30,14 @@ public class PlaceService {
         placesList = new ArrayList<>(places);
     }
 
-    public Plan[] getPlan(int days) {
+    public Plan[] getPlans(int days, boolean minimizeTime) {
         // 0: distance matrix 1: static duration matrix 2: duration matrix
-        long[][][] distances = computeDistance();
+        long[][][] Costs = computeDistance();
 
-        // Cluster by duration by default for now
+        // Cluster by time or static duration specified by minimizeTime
         // Do not include the first place(home place) in the clusters
-        List<Integer>[] clusters = Clustering.cluster(distances[1], days, true);
+        int minOpt = minimizeTime ? 1 : 0;
+        List<Integer>[] clusters = Clustering.cluster(Costs[minOpt], days, true);
 
         // Add the first place(home place) to all clusters
         for (int i = 0; i < clusters.length; i++) {
@@ -49,10 +50,10 @@ public class PlaceService {
         Plan[] plans = new Plan[days];
         for (int i = 0; i < clusters.length; i++) {
 
-            // Tsp by duration by default for now
-            long[][] clusterDistances = getClusterDistances(distances[1], clusters[i]);
+            // Tsp
+            long[][] clusterCosts = getClusterCosts(Costs[minOpt], clusters[i]);
 
-            Tsp.setup(clusterDistances);
+            Tsp.setup(clusterCosts);
             Tsp.solve();
             int[] tour = Tsp.getBestTour();
             long cost = Tsp.getBestTourCost();
@@ -75,16 +76,16 @@ public class PlaceService {
         return plans;
     }
 
-    public long[][] getClusterDistances(long[][] distances, List<Integer> cluster) {
-        long[][] clusterDistances = new long[cluster.size()][cluster.size()];
+    public long[][] getClusterCosts(long[][] Costs, List<Integer> cluster) {
+        long[][] clusterCosts = new long[cluster.size()][cluster.size()];
 
         for (int i = 0; i < cluster.size(); i++) {
             for (int j = 0; j < cluster.size(); j++) {
-                clusterDistances[i][j] = distances[cluster.get(i)][cluster.get(j)];
+                clusterCosts[i][j] = Costs[cluster.get(i)][cluster.get(j)];
             }
         }
 
-        return clusterDistances;
+        return clusterCosts;
     }
 
     public long[][][] computeDistance() {

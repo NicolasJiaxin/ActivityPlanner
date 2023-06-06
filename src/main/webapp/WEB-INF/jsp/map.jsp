@@ -26,8 +26,8 @@
                 <h2 class="mb-4">Trip Information</h2>
                 <p id="cityInfo" class="mb-3">Current city: </p>
                 <p id="homeInfo" class="mb-3">Current stay: </p>
-                Number of days
-                <select id="numberDays" class="form-select-sm ms-5 mb-3"></select>
+                Number of days:
+                <select id="numberDays" class="form-select-sm ms-3 mb-3"></select>
 
                 <div id="minimizeOptions" class="mb-3">
                     Minimize:&nbsp&nbsp&nbsp

@@ -23,12 +23,16 @@ public class MapController {
 
     @RequestMapping(value="/compute", method = RequestMethod.POST)
     @ResponseBody
-    public Plan[] processPlaces(@RequestParam("days") int days, @RequestBody List<Place> places) {
+    public Plan[] processPlaces(
+            @RequestParam("days") int days,
+            @RequestParam("minimizeTime") boolean minimizeTime,
+            @RequestBody List<Place> places) {
+        System.out.println(minimizeTime);
         for (int i = 0; i < places.size(); i++) {
             System.out.println(places.get(i));
         }
         placeService.setPlacesList(places);
-        Plan[] plans = placeService.getPlan(days);
+        Plan[] plans = placeService.getPlans(days, minimizeTime);
 
         return plans;
     }
