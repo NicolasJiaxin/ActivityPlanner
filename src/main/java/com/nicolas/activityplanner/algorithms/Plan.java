@@ -21,6 +21,7 @@ public class Plan {
 
     public void addPlaceToItinerary(Place place) {
         itinerary.add(place);
+        timeCost += place.getVisitDuration();
     }
 
     public Place getPlaceByIndex(int i) {

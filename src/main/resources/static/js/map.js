@@ -22,9 +22,9 @@ class Place {
 
 function initialize() {
     setupButtons();
-    // displayCitySelector();
-    // initMap();
-    // initAutocomplete();
+    displayCitySelector();
+    initMap();
+    initAutocomplete();
 
     // addRow(1,"1",defaultDuration);
     // addRow(2,"2",defaultDuration);
@@ -59,7 +59,7 @@ function setupButtons() {
             0,
             homeMarker.getTitle(),
             homeMarker.getPosition().lat(),
-            homeMarker.getPosition.lng(),
+            homeMarker.getPosition().lng(),
             0
         )
         let places = [homePlace];

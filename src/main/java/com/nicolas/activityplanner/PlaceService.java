@@ -36,7 +36,7 @@ public class PlaceService {
 
         // Cluster by duration by default for now
         // Do not include the first place(home place) in the clusters
-        List<Integer>[] clusters = Clustering.cluster(distances[2], days, true);
+        List<Integer>[] clusters = Clustering.cluster(distances[1], days, true);
 
         // Add the first place(home place) to all clusters
         for (int i = 0; i < clusters.length; i++) {
@@ -45,12 +45,12 @@ public class PlaceService {
             Collections.swap(clusters[i], 0, clusters[i].size() - 1);
         }
 
-        // Tsp by duration by default for now
         // Get tour for each day (cluster)
         Plan[] plans = new Plan[days];
         for (int i = 0; i < clusters.length; i++) {
 
-            long[][] clusterDistances = getClusterDistances(distances[2], clusters[i]);
+            // Tsp by duration by default for now
+            long[][] clusterDistances = getClusterDistances(distances[1], clusters[i]);
 
             Tsp.setup(clusterDistances);
             Tsp.solve();
@@ -128,7 +128,7 @@ public class PlaceService {
                         // For example, for ComputeRoutes, set the field mask to
                         // "routes.distanceMeters,routes.duration,routes.polyline.encodedPolyline"
                         // in order to get the route distances, durations, and encoded polylines.
-                        headers.put(FIELD_MASK_HEADER, "origin_index,destination_index,distance_meters,duration,condition");
+                        headers.put(FIELD_MASK_HEADER, "*");
                         super.start(responseListener, headers);
                     }
                 };
@@ -161,7 +161,7 @@ public class PlaceService {
                     .setTravelMode(RouteTravelMode.DRIVE).setRoutingPreference(RoutingPreference.TRAFFIC_AWARE);
             for (Waypoint waypoint : waypoints) {
                 builder.addOrigins(RouteMatrixOrigin.newBuilder().setWaypoint(waypoint)
-                        .setRouteModifiers(RouteModifiers.newBuilder().setAvoidTolls(true).setAvoidFerries(true).setAvoidFerries(true)))
+                        .setRouteModifiers(RouteModifiers.newBuilder().setAvoidTolls(true).setAvoidFerries(true)))
                         .addDestinations(RouteMatrixDestination.newBuilder()
                                 .setWaypoint(waypoint));
             }
