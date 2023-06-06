@@ -56,6 +56,7 @@ function setupButtons() {
     // Submit button
     $("#submitButton").click(function(e) {
         $("#plansDiv").css("display","none").empty();
+        $("#showPlans").css("display", "none");
         $(this).val("Loading...");
         $(this).prop("disabled", true);
         let homePlace = new Place(

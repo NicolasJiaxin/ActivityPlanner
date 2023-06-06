@@ -7,7 +7,7 @@
     <link rel="shortcut icon" type="image/png" th:href="@{/favicon.ico}"/>
     <title>Activity Planner</title>
 </head>
-<body style="background-color:rgba(43,45,76,0.79);">
+<body style="background-color:rgba(0,0,0,0.85);">
     <div class="lightbox">
         <h1 style="display: none; z-index: 30" class="mb-4">Enter your city</h1>
         <input id="citySearchBox" type="text" style="display: none" class="searchBox">
@@ -68,8 +68,8 @@
         </div>
     </div>
 
-    <div id="plansDiv" class="container m-5" style="display: none">
-        <h1 id="plansTables">Trip Plan</h1>
+    <div id="plansDiv" class="container m-5" style="display: none; color: floralwhite">
+        <h2 id="plansTables">Trip Plan</h2>
     </div>
 
     <script src="js/map.js"></script>
