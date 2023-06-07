@@ -19,7 +19,7 @@ class TspTest {
         Tsp.solve();
 
         assertEquals(80, Tsp.getBestTourCost());
-        assertArrayEquals(new int[] {0,1,3,2},Tsp.getBestTour());
+        assertArrayEquals(new int[] {0,2,3,1},Tsp.getBestTour());
     }
 
     @Test
@@ -35,7 +35,7 @@ class TspTest {
         Tsp.solve();
 
         assertEquals(95, Tsp.getBestTourCost());
-        assertArrayEquals(new int[] {0,2,1,3},Tsp.getBestTour());
+        assertArrayEquals(new int[] {0,3,1,2},Tsp.getBestTour());
     }
 
     @Test
@@ -51,7 +51,7 @@ class TspTest {
         Tsp.solve();
 
         assertEquals(95, Tsp.getBestTourCost());
-        assertArrayEquals(new int[] {0,2,1,3},Tsp.getBestTour());
+        assertArrayEquals(new int[] {0,3,1,2},Tsp.getBestTour());
     }
 
     @Test
@@ -81,7 +81,7 @@ class TspTest {
         Tsp.solve();
 
         assertEquals(80, Tsp.getBestTourCost());
-        assertArrayEquals(new int[] {0,1,3,2},Tsp.getBestTour());
+        assertArrayEquals(new int[] {0,2,3,1},Tsp.getBestTour());
     }
 
     @Test
@@ -97,6 +97,6 @@ class TspTest {
         Tsp.solve();
 
         assertEquals(80, Tsp.getBestTourCost());
-        assertArrayEquals(new int[] {0,2,3,1},Tsp.getBestTour());
+        assertArrayEquals(new int[] {0,1,3,2},Tsp.getBestTour());
     }
 }

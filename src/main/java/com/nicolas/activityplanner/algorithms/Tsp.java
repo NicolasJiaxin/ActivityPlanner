@@ -74,7 +74,7 @@ public class Tsp {
         // Backtrack the best tour starting at the last vertex
         int mask = (1 << n) - 1;
         bestTour[0] = 0;
-        for(int i = 0; i < n-1; i++) {
+        for(int i = n-2; i >= 0; i--) {
             bestTour[i+1] = prevVertex;
             int temp = prev[prevVertex][mask];
             mask = mask & (~(1 << prevVertex));
