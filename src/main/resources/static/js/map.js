@@ -40,9 +40,9 @@ function initialize() {
 
 function setupButtons() {
     // Add delegate events for delete buttons of each row in table
-    $("tbody").on("click", "#deleteButton", function() {
+    $("#tableBodyPlaces").on("click", "#deleteButton", function() {
         let label = $(this).parent().siblings(".label").text();
-        console.log(label);
+        console.log("Deleting place with label:" + label);
         removePlace(parseInt(label)-1);
     });
 
@@ -55,6 +55,10 @@ function setupButtons() {
 
     // Submit button
     $("#submitButton").click(function(e) {
+        if (count === 0) {
+            $("#noPlacesErrorText").show();
+            return;
+        }
         $("#plansDiv").css("display","none").empty();
         $("#showPlans").css("display", "none");
         $(this).val("Loading...");
@@ -76,7 +80,6 @@ function setupButtons() {
                 rows[i].find("#durationBox").val()
             );
             places.push(p);
-
         }
         console.log(JSON.stringify(places));
         $.ajax({
@@ -93,8 +96,10 @@ function setupButtons() {
             },
             contentType: "application/json; charset=utf-8"
         });
+        console.log("After submit count is: " + count);
         $("#submitButton").val("Submit");
         $("#submitButton").prop("disabled", false);
+
     });
 
     $("#showPlansButton").click(function() {
@@ -213,6 +218,7 @@ function onPlaceChangedHome() {
 }
 
 function onPlaceChangedMap() {
+    $("#noPlacesErrorText").css("display", "none");
     var place = mapAutocomplete.getPlace();
     var mapSearchBox = document.getElementById("mapSearchBox");
 
@@ -222,11 +228,11 @@ function onPlaceChangedMap() {
         mapSearchBox.style.boxShadow = "0 0 10px #666";
         mapSearchBox.style.border = "2px solid red";
     } else {
-        console.log(place.name);
         mapSearchBox.placeholder = "Enter a place";
         mapSearchBox.style.boxShadow = "none";
         mapSearchBox.style.border = "2px solid rgba(123, 123, 123, 0.65)";
         count++;
+        console.log("Adding place: " +place.name + " with count " + count);
         addMarker(place.geometry.location, place.name, count.toString());
         addRow(count, place.name, defaultDuration);
     }
@@ -234,7 +240,7 @@ function onPlaceChangedMap() {
 }
 
 function addMarker(position, title, label) {
-    console.log("Adding marker");
+    console.log("Adding marker with label: " + label + " and name: " + title);
     const marker = new google.maps.Marker({
         position,
         map,
@@ -245,6 +251,7 @@ function addMarker(position, title, label) {
 }
 
 function addRow(label, name, duration) {
+    console.log("Adding row with label: " + label + " and name: " + name);
     let row = $("" +
         "<tr>" +
             "<td class='label'><strong>" + label + "</strong></td>" +
@@ -252,7 +259,7 @@ function addRow(label, name, duration) {
             "<td class='duration'><input type='number' min='0' max='240' value=" + duration +" id='durationBox'></td>" +
             "<td class='delete'><input type='button' id='deleteButton' value='✘'</td>" +
         "</tr>");
-    $("tbody").append(row);
+    row.css("display", "none").appendTo($("#tableBodyPlaces")).fadeIn(200);
     rows.push(row);
 }
 
@@ -276,7 +283,12 @@ function reindexMarkers(index) {
 }
 
 function removeRow(index) {
-   rows.splice(index,1)[0].remove();
+    console.log("Removing row at index:" + index);
+    console.log("The row at index is:" + rows[index]);
+    console.log("count is:" + count + " with num of rows " + rows.length);
+    let row = rows.splice(index,1);
+    row[0].fadeOut(200, function() { $(this).remove(); });
+    console.log("count is:" + count + " with num of rows " + rows.length);
 }
 
 function reindexTable(index) {

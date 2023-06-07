@@ -59,11 +59,14 @@
                             <th class="delete"></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tableBodyPlaces">
                         <tr>
                         </tr>
                     </tbody>
                 </table>
+                <div class="text-warning" id="noPlacesErrorText">
+                    Please select at least one place to visit.
+                </div>
             </div>
         </div>
     </div>
