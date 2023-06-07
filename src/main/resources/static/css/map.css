@@ -71,8 +71,8 @@ tr, tbody{
     min-height: 100%;
     overflow: scroll;
     padding: 15% 35% 25% 35%;
-    color: #000000;
-    background-color: rgba(14, 46, 69, 0.6);
+    color: #ffffff;
+    background-color: rgba(15, 28, 36, 0.6);
     text-align: center;
     text-shadow: #333 0 1px 0;
     z-index: 20;

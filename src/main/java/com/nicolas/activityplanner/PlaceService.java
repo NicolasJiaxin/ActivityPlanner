@@ -121,7 +121,7 @@ public class PlaceService {
     }
 
     public long[][][] computeDistance() {
-        String apiKey = "AIzaSyDw1_NBRgD0_BROwJu7LqUdbV9ZYzW5uVQ";//System.getenv("AIzaSyDw1_NBRgD0_BROwJu7LqUdbV9ZYzW5uVQ");
+        String apiKey = System.getenv("GoogleApiKey");
 
         // The standard TLS port is 443
         Channel channel = NettyChannelBuilder.forAddress("routes.googleapis.com", 443).build();

@@ -122,8 +122,8 @@ public class RoutesClient {
     }
 
     public static void main(String[] args) throws Exception {
-        String apiKey = "AIzaSyDw1_NBRgD0_BROwJu7LqUdbV9ZYzW5uVQ";//System.getenv("AIzaSyDw1_NBRgD0_BROwJu7LqUdbV9ZYzW5uVQ");
-
+        String apiKey = System.getenv("GoogleApiKey");
+        System.out.println(apiKey);
         // The standard TLS port is 443
         Channel channel = NettyChannelBuilder.forAddress("routes.googleapis.com", 443).build();
         channel = ClientInterceptors.intercept(channel, new RoutesInterceptor(apiKey));
