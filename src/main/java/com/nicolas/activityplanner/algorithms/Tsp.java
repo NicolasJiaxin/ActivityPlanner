@@ -24,15 +24,13 @@ public class Tsp {
         bestTour = new int[n];
     }
 
+    // Returns the min-cost of the path from vertex 0 to i using all vertices set in mask
     static long fun(int i, int mask)
     {
-        // base case
-        // if only ith bit and 1st bit is set in our mask,
-        // it implies we have visited all other nodes
-        // already
+        // base case: only vertex 0 and i
         if (mask == ((1 << i) | 1)) {
             //prev[i][mask] = 1; // Could set it for clarity but really is trivial
-            return dist[i][0];
+            return dist[0][i];
         }
         // memoization
         if (memo[i][mask] != 0) {
@@ -42,14 +40,8 @@ public class Tsp {
         long res = MAX; // result of this sub-problem
         int prevVertex = 0;
 
-        // we have to travel all nodes j in mask and end the
-        // path at ith node so for every node j in mask,
-        // recursively calculate cost of travelling all
-        // nodes in mask
-        // except i and then travel back from node j to node
-        // i taking the shortest path take the minimum of
-        // all possible j nodes
-
+        // To find the min cost path from 0 to i using all vertices in the mask, find min of
+        // the costs of each path from 0 to j + dist[j][i] where j is in the mask, j!=i and j!=0
         for (int j = 1; j < n; j++)
             if ((mask & (1 << j)) != 0 && j != i) {
                 long bestPrevTour = fun(j, mask & (~(1 << i))) + dist[j][i];
@@ -96,21 +88,5 @@ public class Tsp {
 
     public static int[] getBestTour() {
         return bestTour;
-    }
-
-    public static void main(String[] args) {
-        Tsp.setup(new long[][]
-               {
-                { 0, 10, 15, 20 },
-                {10,  0, 35, 25 },
-                {15, 35,  0, 30 },
-                {20, 25, 30,  0 }}
-        );
-        solve();
-        System.out.println("Cost: " + getBestTourCost());
-        System.out.println("The tour is:");
-        for(int i = 0; i < n; i++) {
-            System.out.println(bestTour[i]);
-        }
     }
 }
