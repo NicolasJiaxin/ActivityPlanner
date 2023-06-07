@@ -304,7 +304,8 @@ function displayAllPlans(plans) {
     for(let i = 0; i < plans.length; i++) {
         if (plans[i].itinerary.length !== 2) {
             plansDiv.append("<h2 class='mt-3'>Day " + (i + 1) + " plan</h2>");
-            let rows = displayPlan(plans[i]);
+            let plan = plans[i];
+            let rows = displayPlan(plan);
             plansDiv.append("<table class='table table-dark' style='width: max-content'>" +
                 "<thead>" +
                 "<tr>" +
@@ -315,7 +316,12 @@ function displayAllPlans(plans) {
                 "</thead><tbody style='height: auto; width: max-content'>" +
                 rows +
                 "</tbody></table>");
-            plansDiv.append("<strong>Time:</strong> " + Math.round(plans[i].timeCost / 60) + " minutes (including visit time)");
+            let travelTimeCost = Math.round(plan.travelTimeCost / 60);
+            let distanceCost = (plan.distanceCost / 1000).toFixed(1);
+            let visitTimeCost = plan.visitTimeCost;
+            plansDiv.append("<strong>Distance traveled:</strong> " +  distanceCost + " km<br>");
+            plansDiv.append("<strong>Travel time:</strong> " +  travelTimeCost + " minutes<br>");
+            plansDiv.append("<strong>Visit time:</strong> " +  visitTimeCost + " minutes");
         }
     }
 }

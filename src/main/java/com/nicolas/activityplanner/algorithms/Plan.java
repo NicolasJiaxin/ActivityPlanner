@@ -6,34 +6,55 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Plan {
-    private long timeCost;
+    private long travelTimeCost;
+    private long distanceCost;
+    private int visitTimeCost;
     private List<Place> itinerary;
 
-    public Plan(long timeCost, List<Place> itinerary) {
-        this.timeCost = timeCost;
+    public Plan(long travelTimeCost, long distanceCost, int visitTimeCost, List<Place> itinerary) {
+        this.travelTimeCost = travelTimeCost;
+        this.distanceCost = distanceCost;
+        this.visitTimeCost = visitTimeCost;
         this.itinerary = itinerary;
     }
 
-    public Plan(long timeCost) {
-        this.timeCost = timeCost;
+    public Plan() {
+        this.travelTimeCost = 0;
+        this.distanceCost = 0;
+        this.visitTimeCost = 0;
         this.itinerary = new ArrayList<>();
     }
 
     public void addPlaceToItinerary(Place place) {
         itinerary.add(place);
-        timeCost += place.getVisitDuration() * 60;
     }
 
     public Place getPlaceByIndex(int i) {
         return itinerary.get(i);
     }
 
-    public long getTimeCost() {
-        return timeCost;
+    public long getTravelTimeCost() {
+        return travelTimeCost;
     }
 
-    public void setTimeCost(long timeCost) {
-        this.timeCost = timeCost;
+    public void setTravelTimeCost(long travelTimeCost) {
+        this.travelTimeCost = travelTimeCost;
+    }
+
+    public int getVisitTimeCost() {
+        return visitTimeCost;
+    }
+
+    public void setVisitTimeCost(int visitTimeCost) {
+        this.visitTimeCost = visitTimeCost;
+    }
+
+    public long getDistanceCost() {
+        return distanceCost;
+    }
+
+    public void setDistanceCost(long distanceCost) {
+        this.distanceCost = distanceCost;
     }
 
     public List<Place> getItinerary() {
@@ -46,7 +67,11 @@ public class Plan {
 
     @Override
     public String toString() {
-        StringBuffer stringBuf = new StringBuffer("Plan{timeCost=" + timeCost + ", itinerary=[");
+        StringBuffer stringBuf = new StringBuffer("" +
+                "Plan{travelTimeCost=" + travelTimeCost +
+                ", visitTimeCost=" + visitTimeCost +
+                ", distanceCost=" + distanceCost +
+                ", itinerary=[");
         for (Place place : itinerary) {
             stringBuf.append(place.toString());
             stringBuf.append(", ");

@@ -32,12 +32,12 @@ public class PlaceService {
 
     public Plan[] getPlans(int days, boolean minimizeTime) {
         // 0: distance matrix 1: static duration matrix 2: duration matrix
-        long[][][] Costs = computeDistance();
+        long[][][] costs = computeDistance();
 
         // Cluster by time or static duration specified by minimizeTime
         // Do not include the first place(home place) in the clusters
         int minOpt = minimizeTime ? 1 : 0;
-        List<Integer>[] clusters = Clustering.cluster(Costs[minOpt], days, true);
+        List<Integer>[] clusters = Clustering.cluster(costs[minOpt], days, true);
 
         // Add the first place(home place) to all clusters
         for (int i = 0; i < clusters.length; i++) {
@@ -51,25 +51,57 @@ public class PlaceService {
         for (int i = 0; i < clusters.length; i++) {
 
             // Tsp
-            long[][] clusterCosts = getClusterCosts(Costs[minOpt], clusters[i]);
+            long[][] clusterCosts = getClusterCosts(costs[minOpt], clusters[i]);
 
             Tsp.setup(clusterCosts);
             Tsp.solve();
             int[] tour = Tsp.getBestTour();
-            long cost = Tsp.getBestTourCost();
+            long travelCost = Tsp.getBestTourCost();
 
             // Create the plan according to the Tsp
-            Plan plan = new Plan(cost);
-            for (int j = 0; j < tour.length; j++) {
+            Plan plan = new Plan();
+
+            // Determine what is travelCost about
+            if (minimizeTime) {
+                plan.setTravelTimeCost(travelCost);
+            } else {
+                plan.setDistanceCost(travelCost);
+            }
+
+            // Add first place to list
+            int idxCluster = tour[0];
+            int idxPlaces = clusters[i].get(idxCluster);
+            plan.addPlaceToItinerary(placesList.get(idxPlaces));
+
+            int prevIdxPlaces = idxPlaces;
+            int firstPlaceIdx = idxPlaces;
+            // Cost for the other metrics
+            int visitTimeCost = 0;
+            long otherTravelCost = 0;   // distanceCost if minimizeTime, travelTimeCost else
+            int otherOpt = minimizeTime ? 0 : 1;
+            for (int j = 1; j < tour.length; j++) {
                 // Tour is indexed for the cluster
-                int idxCluster = tour[j];
+                idxCluster = tour[j];
                 // From the cluster, get the actual number of the place
-                int idxPlaces = clusters[i].get(idxCluster);
+                idxPlaces = clusters[i].get(idxCluster);
                 // From list of places, add the place to the plan
-                plan.addPlaceToItinerary(placesList.get(idxPlaces));
+                Place place = placesList.get(idxPlaces);
+
+                plan.addPlaceToItinerary(place);
+                visitTimeCost += place.getVisitDuration();
+                otherTravelCost += costs[otherOpt][prevIdxPlaces][idxPlaces];
+
+                prevIdxPlaces = idxPlaces;
             }
             // Re-add the first place to complete the tour
             plan.addPlaceToItinerary(plan.getPlaceByIndex(0));
+            otherTravelCost += costs[otherOpt][prevIdxPlaces][firstPlaceIdx];
+            if (minimizeTime) {
+                plan.setDistanceCost(otherTravelCost);
+            } else {
+                plan.setTravelTimeCost(otherTravelCost);
+            }
+            plan.setVisitTimeCost(visitTimeCost);
             plans[i] = plan;
         }
 
